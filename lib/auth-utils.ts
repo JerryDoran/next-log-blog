@@ -22,14 +22,14 @@ export const authIsRequired = async () => {
   if (!session) {
     redirect('/sign-in');
   }
-  // return session;
+  return session;
 };
 
 export const authIsNotRequired = async () => {
   const session = await authSession();
 
   if (session) {
-    redirect('/dashboard');
+    redirect('/');
   }
-  // return session;
+  return session;
 };

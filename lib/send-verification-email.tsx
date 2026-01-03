@@ -17,7 +17,7 @@ export const sendVerificationEmail = async ({
   await resend.emails.send({
     from: process.env.EMAIL_FROM!,
     to,
-    subject: 'Welcome to betterauth-next',
+    subject: 'Welcome to NextLog! Please verify your email address',
     react: (
       <VerificationEmail
         verificationUrl={verificationUrl}
