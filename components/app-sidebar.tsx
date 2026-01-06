@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Heart, Clipboard } from 'lucide-react';
+import { Home, Inbox, Heart, Clipboard } from 'lucide-react';
 
 import {
   Sidebar,
@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { ThemeToggle } from './theme-toggle';
 
 // Menu items.
 const items = [
@@ -38,7 +39,7 @@ const items = [
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarContent>
+      <SidebarContent className='flex flex-col justify-between p-4'>
         <SidebarGroup>
           <SidebarGroupLabel>Next Log</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -56,6 +57,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <ThemeToggle />
       </SidebarContent>
     </Sidebar>
   );

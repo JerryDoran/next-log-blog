@@ -6,10 +6,13 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { object, z } from 'zod';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 import { Input } from '@/components/ui/input';
 import ImageUploader from '@/components/image-uploader';
@@ -24,6 +27,7 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '../ui/spinner';
+import { generateSlug } from '@/lib/utils';
 
 const CreatableSelect = dynamic(() => import('react-select/creatable'), {
   ssr: false,
@@ -38,7 +42,7 @@ const formSchema = z.object({
   tags: z.array(object({ label: z.string(), value: z.string() })),
   status: z.string(),
   categories: z.array(object({ id: z.string(), name: z.string() })).optional(),
-  slug: z.string('Slug is required'),
+  slug: z.string().min(2, 'Slug is required'),
 });
 
 export type PostFormValues = z.infer<typeof formSchema>;
@@ -54,6 +58,8 @@ export default function PostForm({
   categories,
   slug,
 }: PostFormValues) {
+  const router = useRouter();
+
   const form = useForm<PostFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -67,11 +73,25 @@ export default function PostForm({
       status,
       slug,
     },
+    mode: 'onBlur',
   });
+
+  async function onSubmit(values: PostFormValues) {
+    if (id) {
+      // TODO: Update existing post
+    }
+    await createPost(values);
+    toast.success('Post created successfully!');
+    form.reset();
+    router.push('/posts');
+  }
 
   return (
     <Form {...form}>
-      <form className='grid lg:grid-cols-2 w-full max-w-6xl gap-10 p-4 mt-6 mx-auto'>
+      <form
+        className='grid lg:grid-cols-2 w-full max-w-6xl gap-10 p-4 mt-6 mx-auto'
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <div className='flex flex-col gap-6'>
           <FormField
             control={form.control}
@@ -80,8 +100,21 @@ export default function PostForm({
               <FormItem>
                 <FormLabel>Title</FormLabel>
                 <FormControl>
-                  <Input placeholder='Post Title' {...field} />
+                  <Input
+                    placeholder='Post Title'
+                    {...field}
+                    onBlur={(e) => {
+                      field.onBlur();
+                      if (!form.getValues('slug')) {
+                        form.setValue('slug', generateSlug(e.target.value), {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        });
+                      }
+                    }}
+                  />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -94,6 +127,7 @@ export default function PostForm({
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -122,6 +156,7 @@ export default function PostForm({
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -253,7 +288,7 @@ export default function PostForm({
           variant='default'
           type='submit'
           className='mt-6 md:max-w-40 cursor-pointer'
-          disabled={!form.formState.isValid || form.formState.isSubmitting}
+          disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting ? (
             <>
