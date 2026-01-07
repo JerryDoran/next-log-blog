@@ -3,6 +3,9 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Category } from '@/generated/prisma/client';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { ArrowUpDown } from 'lucide-react';
+import CellActions from './cell-actions';
 
 export const columns: ColumnDef<Category>[] = [
   {
@@ -28,16 +31,26 @@ export const columns: ColumnDef<Category>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'amount',
-    header: () => <div className='text-right'>Amount</div>,
+    accessorKey: 'name',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Name
+          <ArrowUpDown className='ml-2 size-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className='lowercase'>{row.getValue('name')}</div>,
+  },
+  {
+    id: 'actions',
+    enableHiding: false,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue('amount'));
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(amount);
-
-      return <div className='text-right font-medium'>{formatted}</div>;
+      const { userId, createdAt, updatedAt, ...data } = row.original;
+      return <CellActions />;
     },
   },
 ];
