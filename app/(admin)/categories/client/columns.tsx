@@ -49,8 +49,7 @@ export const columns: ColumnDef<Category>[] = [
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
-      const { userId, createdAt, updatedAt, ...data } = row.original;
-      return <CellActions name={data.name} id={data.id} />;
+      return <CellActions name={row.original.name} id={row.original.id} />;
     },
   },
 ];

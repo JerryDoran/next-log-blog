@@ -21,6 +21,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { deleteCategory } from '@/actions/categories';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function CellActions({ id, name }: CategoryProps) {
   const { setCategory, setOpen } = useCategories();
@@ -38,6 +40,8 @@ export default function CellActions({ id, name }: CategoryProps) {
   async function onRemoveCategory() {
     try {
       setIsLoading(true);
+
+      await deleteCategory(id);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -98,9 +102,16 @@ export default function CellActions({ id, name }: CategoryProps) {
             variant='destructive'
             disabled={isLoading}
             onClick={onRemoveCategory}
-            className='max-w-40 self-end cursor-pointer'
+            className='max-w-full self-end cursor-pointer'
           >
-            Delete
+            {isLoading ? (
+              <div className='flex items-center gap-2'>
+                <Spinner className='size-6' />
+                Deleting category...
+              </div>
+            ) : (
+              'Delete'
+            )}
           </Button>
         </DialogContent>
       </Dialog>

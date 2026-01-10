@@ -39,7 +39,7 @@ export default function RootLayout({
           {/* <ThemeToggle /> */}
           {children}
         </ThemeProvider>
-        <Toaster />
+        <Toaster richColors />
       </body>
     </html>
   );

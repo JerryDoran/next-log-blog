@@ -1,5 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
+import { useEffect } from 'react';
 import { DataTable } from '@/components/data-table';
 import { columns } from './columns';
 import { Category } from '@/generated/prisma/client';
@@ -25,7 +27,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
-import { createCategory } from '@/actions/categories';
+import { createCategory, updateCategory } from '@/actions/categories';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -60,7 +62,8 @@ export default function CategoriesClient({
   async function onSubmit(values: FormValues) {
     try {
       if (category?.id) {
-        // TODO: Update existing category
+        await updateCategory({ id: category.id, name: values.name });
+        toast.success('Category updated successfully!');
       } else {
         await createCategory(values.name);
         toast.success('Category created successfully!');
@@ -73,6 +76,12 @@ export default function CategoriesClient({
       toast.error(error instanceof Error ? error.message : 'An error occurred');
     }
   }
+
+  useEffect(() => {
+    if (category) {
+      form.setValue('name', category.name);
+    }
+  }, [category]);
 
   return (
     <>
