@@ -51,13 +51,13 @@ export function SignInForm() {
         {
           email: data.email,
           password: data.password,
-          callbackURL: '/',
+          callbackURL: '/dashboard',
         },
         {
           onSuccess: async () => {
             form.reset();
             toast.success('Signed in successfully!');
-            router.push('/');
+            router.push('/dashboard');
           },
           onError: (ctx) => {
             toast.error(ctx.error.message);

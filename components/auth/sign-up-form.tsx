@@ -61,12 +61,12 @@ export function SignUpForm() {
           name: data.name,
           email: data.email,
           password: data.password,
-          callbackURL: '/',
+          callbackURL: '/dashboard',
         },
         {
           onSuccess: async () => {
             toast.success('Signed up successfully!');
-            router.push('/');
+            router.push('/dashboard');
           },
           onError: (ctx) => {
             toast.error(ctx.error.message);

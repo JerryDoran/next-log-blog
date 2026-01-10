@@ -7,7 +7,7 @@ export const authSession = async () => {
     const session = auth.api.getSession({ headers: await headers() });
 
     if (!session) {
-      throw new Error('Unauthorized:No active session found');
+      throw new Error('Unauthorized: No active session found');
     }
 
     return session;

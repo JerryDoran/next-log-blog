@@ -1,9 +1,12 @@
-import { DataTable } from '@/components/data-table';
+import { getCategories } from '@/actions/categories';
+import CategoriesClient from './client/categories-client';
 
 export default async function CategoriesPage() {
+  const data = await getCategories();
+
   return (
     <div>
-      <DataTable columns={[]} data={[]} />
+      <CategoriesClient categories={data ?? []} />
     </div>
   );
 }
