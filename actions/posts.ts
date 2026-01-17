@@ -106,3 +106,32 @@ export async function updatePost(postParams: PostFormValues) {
     throw new Error('Something went wrong!');
   }
 }
+
+export async function deletePost(postId: string) {
+  try {
+    const session = await authSession();
+
+    if (!session) {
+      throw new Error('Unauthorized: User not found!');
+    }
+
+    const { categories, tags, id, ...rest } = postParams;
+    const data = { ...rest, tags: tags.map((tag) => tag.value) };
+
+    const post = await prisma.post.update({
+      where: {
+        id: id,
+      },
+      data: {
+        ...data,
+        userId: session.user.id,
+        status: data.status as PostStatus,
+      },
+    });
+
+    return post;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Something went wrong!');
+  }
+}

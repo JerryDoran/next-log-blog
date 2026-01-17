@@ -79,10 +79,17 @@ export const columns: ColumnDef<PostWithCategory>[] = [
     },
   },
   {
+    accessorKey: 'views',
+    header: 'Views',
+    cell: ({ row }) => {
+      row.getValue('views');
+    },
+  },
+  {
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
-      return <CellActions name={row.original.id} id={row.original.id} />;
+      return <CellActions id={row.original.id} />;
     },
   },
 ];

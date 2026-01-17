@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { CategoryProps, useCategories } from '@/hooks/use-categories';
-import { Copy, Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { useCategories } from '@/hooks/use-categories';
+import { Copy, Edit Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -11,22 +11,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { deleteCategory } from '@/actions/categories';
+import { deletePost } from '@/actions/posts';
 import { Spinner } from '@/components/ui/spinner';
 
-export default function CellActions({ id, name }: CategoryProps) {
-  const { setCategory, setOpen } = useCategories();
-
+export default function CellActions({ id }: { id: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -34,21 +25,21 @@ export default function CellActions({ id, name }: CategoryProps) {
 
   function onCopy() {
     navigator.clipboard.writeText(id);
-    toast.success(`Category ${name} copied to clipboard!`);
+    toast.success(`Post copied to clipboard!`);
   }
 
-  async function onRemoveCategory() {
+  async function onRemovePost() {
     try {
       setIsLoading(true);
 
-      await deleteCategory(id);
+      await deletePost(id);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
       throw new Error(`Something went wrong! ${errorMessage}`);
     } finally {
       router.refresh();
-      toast.success(`Category ${name} deleted successfully!`);
+      toast.success(`Post deleted successfully!`);
       setIsLoading(false);
       setIsDeleteModalOpen(false);
     }
@@ -68,8 +59,7 @@ export default function CellActions({ id, name }: CategoryProps) {
           className='cursor-pointer'
           title='Edit'
           onClick={() => {
-            setOpen(true);
-            setCategory({ id, name });
+            router.push(`/posts/${id}`);
           }}
         >
           <Edit className='size-4' />
@@ -93,7 +83,7 @@ export default function CellActions({ id, name }: CategoryProps) {
             <DialogTitle>Delete Category</DialogTitle>
             <DialogDescription className='flex flex-col'>
               <span className='text-md'>
-                Are you sure you want to delete {name}?
+                Are you sure you want to delete post?
               </span>
               <span>This action cannot be undone</span>
             </DialogDescription>
@@ -101,7 +91,7 @@ export default function CellActions({ id, name }: CategoryProps) {
           <Button
             variant='destructive'
             disabled={isLoading}
-            onClick={onRemoveCategory}
+            onClick={onRemovePost}
             className='max-w-full self-end cursor-pointer'
           >
             {isLoading ? (

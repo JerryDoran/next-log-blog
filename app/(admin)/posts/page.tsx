@@ -10,6 +10,7 @@ import { DataTable } from '@/components/data-table';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { getPosts } from '@/actions/posts';
+import { columns } from './client/columns';
 
 export default async function PostsPage() {
   const posts = await getPosts();
