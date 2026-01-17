@@ -19,7 +19,6 @@ export default async function PostDetailsPage({
   params,
 }: PostDetailsPageProps) {
   const { postId } = await params;
-  console.log('ID:', postId);
 
   const post = await getPost(postId);
   const categories = await getCategories();
@@ -47,17 +46,31 @@ export default async function PostDetailsPage({
         </div>
       </div>
       <div className='p-8 flex flex-col'>
-        <PostForm
-          id=''
-          title=''
-          content=''
-          imageUrl=''
-          categoryId=''
-          tags={[]}
-          status=''
-          categories={categories}
-          slug=''
-        />
+        {post ? (
+          <PostForm
+            id={post.id}
+            title={post.title}
+            content={post.content}
+            imageUrl={post.imageUrl!}
+            categoryId={post.categoryId!}
+            tags={post.tags.map((tag) => ({ label: tag, value: tag }))}
+            status={post.status}
+            categories={categories}
+            slug={post.slug}
+          />
+        ) : (
+          <PostForm
+            id=''
+            title=''
+            content=''
+            imageUrl=''
+            categoryId=''
+            tags={[]}
+            status=''
+            categories={categories}
+            slug=''
+          />
+        )}
       </div>
     </>
   );

@@ -28,6 +28,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Spinner } from '../ui/spinner';
 import { generateSlug } from '@/lib/utils';
+import RichTextEditor from '@/components/toolbars/editor';
+import { createPost, updatePost } from '@/actions/posts';
 
 const CreatableSelect = dynamic(() => import('react-select/creatable'), {
   ssr: false,
@@ -78,21 +80,23 @@ export default function PostForm({
 
   async function onSubmit(values: PostFormValues) {
     if (id) {
-      // TODO: Update existing post
+      await updatePost(values);
+      toast.success('Post updated successfully!');
+    } else {
+      await createPost(values);
+      toast.success('Post created successfully!');
+      form.reset();
+      router.push('/posts');
     }
-    await createPost(values);
-    toast.success('Post created successfully!');
-    form.reset();
-    router.push('/posts');
   }
 
   return (
     <Form {...form}>
       <form
-        className='grid lg:grid-cols-2 w-full max-w-6xl gap-10 p-4 mt-6 mx-auto'
+        className='grid lg:grid-cols-3 w-full max-w-6xl gap-10 p-4 mx-auto'
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <div className='flex flex-col gap-6'>
+        <div className='flex flex-col gap-6 col-span-2'>
           <FormField
             control={form.control}
             name='title'
@@ -154,7 +158,10 @@ export default function PostForm({
               <FormItem>
                 <FormLabel>Content</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <RichTextEditor
+                    content={field.value}
+                    onChange={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -221,8 +228,8 @@ export default function PostForm({
             )}
           />
         </div>
-        <div className='flex flex-col gap-6 w-full'>
-          <Card className='w-full max-w-lg lg:max-w-sm'>
+        <div className='flex flex-col gap-6 w-full col-span-3 lg:col-span-1'>
+          <Card className='w-full  lg:max-w-sm'>
             <CardHeader>
               <CardTitle className=''>Publish Settings</CardTitle>
             </CardHeader>

@@ -9,8 +9,10 @@ import {
 import { DataTable } from '@/components/data-table';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { getPosts } from '@/actions/posts';
 
-export default function PostsPage() {
+export default async function PostsPage() {
+  const posts = await getPosts();
   return (
     <>
       <div className='flex flex-col p-8'>
@@ -31,7 +33,7 @@ export default function PostsPage() {
           </Link>
         </div>
       </div>
-      {/* <DataTable columns={columns} data={categories} /> */}
+      <DataTable columns={columns} data={posts} />
     </>
   );
 }
