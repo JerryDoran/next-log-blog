@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useCategories } from '@/hooks/use-categories';
-import { Copy, Edit Trash } from 'lucide-react';
+import { Copy, Edit, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -97,7 +96,7 @@ export default function CellActions({ id }: { id: string }) {
             {isLoading ? (
               <div className='flex items-center gap-2'>
                 <Spinner className='size-6' />
-                Deleting category...
+                Deleting post...
               </div>
             ) : (
               'Delete'

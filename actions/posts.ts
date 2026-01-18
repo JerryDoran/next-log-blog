@@ -14,14 +14,34 @@ export async function getPosts() {
     }
 
     const posts = await prisma.post.findMany({
-      where: {
-        userId: session.user.id,
-      },
       orderBy: {
         createdAt: 'desc',
       },
       include: {
         category: true,
+      },
+    });
+    return posts;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Something went wrong!');
+  }
+}
+
+export async function getPostsByUser() {
+  try {
+    const session = await authSession();
+
+    if (!session) {
+      throw new Error('Unauthorized: User not found!');
+    }
+
+    const posts = await prisma.post.findMany({
+      where: {
+        userId: session.user.id,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
     return posts;
@@ -115,21 +135,11 @@ export async function deletePost(postId: string) {
       throw new Error('Unauthorized: User not found!');
     }
 
-    const { categories, tags, id, ...rest } = postParams;
-    const data = { ...rest, tags: tags.map((tag) => tag.value) };
-
-    const post = await prisma.post.update({
+    await prisma.post.delete({
       where: {
-        id: id,
-      },
-      data: {
-        ...data,
-        userId: session.user.id,
-        status: data.status as PostStatus,
+        id: postId,
       },
     });
-
-    return post;
   } catch (error) {
     console.error(error);
     throw new Error('Something went wrong!');
