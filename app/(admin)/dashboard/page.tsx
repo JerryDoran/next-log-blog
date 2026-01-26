@@ -1,17 +1,17 @@
-import Charts from '@/components/dashboard/dashboard-chart';
 import DashboardCard from '@/components/dashboard/dashboard-card';
 import { authIsRequired, authSession } from '@/lib/auth-utils';
 import { Rocket } from 'lucide-react';
 import Link from 'next/link';
 import DashboardChart from '@/components/dashboard/dashboard-chart';
 import { getPostsByUser } from '@/actions/posts';
-import { getCategories } from '@/actions/categories';
+import { getCategoriesWithUser } from '@/actions/categories';
+import DashboardCategories from '@/components/dashboard/dashboard-categories';
 
 export default async function DashboardPage() {
   await authIsRequired();
   const session = await authSession();
   const posts = await getPostsByUser();
-  const categories = await getCategories();
+  const categories = await getCategoriesWithUser();
   const totalViews = posts.reduce((acc, post) => acc + post.views, 0);
 
   return (
@@ -37,7 +37,10 @@ export default async function DashboardPage() {
           />
         </div>
         <div className='px-4 md:px-6'>
-          <DashboardChart data={posts} categories={categories} />
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4 w-full'>
+            <DashboardChart data={posts} />
+            <DashboardCategories categories={categories} />
+          </div>
         </div>
       </div>
     </div>

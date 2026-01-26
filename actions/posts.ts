@@ -5,23 +5,54 @@ import { PostStatus } from '@/generated/prisma/enums';
 import { authSession } from '@/lib/auth-utils';
 import prisma from '@/lib/db';
 
-export async function getPosts() {
+const PAGE_SIZE = 10;
+
+export async function getPosts(page: number) {
+  const skip = (page - 1) * PAGE_SIZE;
+
+  // Get the current user
+  const session = await authSession();
+
+  const currentUser = session?.user.id
+    ? await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: {
+          favorites: true,
+        },
+      })
+    : null;
+
   try {
-    const session = await authSession();
+    const [posts, totalCount] = await prisma.$transaction([
+      prisma.post.findMany({
+        skip: skip,
+        take: PAGE_SIZE,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              favorites: true,
+            },
+          },
+          category: true,
+        },
+      }),
+      prisma.post.count(),
+    ]);
 
-    if (!session) {
-      throw new Error('Unauthorized: User not found!');
-    }
-
-    const posts = await prisma.post.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-      include: {
-        category: true,
-      },
-    });
-    return posts;
+    return {
+      posts: posts.map((post) => ({
+        ...post,
+        favorite: currentUser?.favorites ?? [],
+      })),
+      totalPages: Math.ceil(totalCount / PAGE_SIZE),
+      currentPage: page,
+    };
   } catch (error) {
     console.error(error);
     throw new Error('Something went wrong!');

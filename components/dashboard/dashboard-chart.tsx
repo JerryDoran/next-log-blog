@@ -24,28 +24,25 @@ const chartConfig = {
 
 type ChartProps = {
   data: Post[];
-  categories: Category[];
 };
 
-export default function DashboardChart({ data, categories }: ChartProps) {
+export default function DashboardChart({ data }: ChartProps) {
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 gap-4 w-full'>
-      <Card>
-        <CardHeader className='flex flex-col w-full'>
-          <CardTitle className='text-4xl font-semibold'>Views</CardTitle>
-          <CardDescription className='text-lg font-medium'>
-            Trending posts by views
-          </CardDescription>
-        </CardHeader>
-        <CardContent className='w-full'>
-          <ChartContainer config={chartConfig}>
-            <BarChart data={data}>
-              <Bar dataKey='views' fill='var(--color-views)' radius={4} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-            </BarChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
-    </div>
+    <Card>
+      <CardHeader className='flex flex-col w-full'>
+        <CardTitle className='text-4xl font-semibold'>Views</CardTitle>
+        <CardDescription className='text-lg font-medium'>
+          Trending posts by views
+        </CardDescription>
+      </CardHeader>
+      <CardContent className='w-full'>
+        <ChartContainer config={chartConfig}>
+          <BarChart data={data}>
+            <Bar dataKey='views' fill='var(--color-views)' radius={4} />
+            <ChartTooltip content={<ChartTooltipContent />} />
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }

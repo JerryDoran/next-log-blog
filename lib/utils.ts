@@ -22,3 +22,9 @@ export const NODE_HANDLES_SELECTED_STYLE_CLASSNAME =
 export function isValidUrl(url: string) {
   return /^https?:\/\/\S+$/.test(url);
 }
+
+export function stripHtml(html: string) {
+  if (!html) return '';
+ 
+  return html.replace(/<[^>]*>?/gm, '').replace(/\s+/g, ' ').trim();
+}

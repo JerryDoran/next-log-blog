@@ -25,6 +25,30 @@ export async function getCategories() {
   }
 }
 
+export async function getCategoriesWithUser() {
+  try {
+    const session = await authSession();
+
+    if (!session) {
+      throw new Error('Unauthorized: User not found!');
+    }
+
+    const categories = await prisma.category.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    return categories;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Something went wrong!');
+  }
+}
+
 export async function createCategory(name: string) {
   try {
     const session = await authSession();
