@@ -4,6 +4,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Toaster } from '@/components/ui/sonner';
+import { Navbar } from '@/components/navbar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -38,6 +39,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {/* <ThemeToggle /> */}
+
             {children}
           </ThemeProvider>
           <Toaster richColors />
